@@ -1,6 +1,18 @@
 require 'rubygems'
 require 'rake'
 require 'activerecord'
+require 'spec'
+require 'spec/rake/spectask'
+
+Spec::Rake::SpecTask.new do |t|
+  t.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:coverage) do |t|
+  t.spec_files = FileList['spec/**/*_spec.rb']
+  t.rcov = true
+  t.rcov_opts = ['-x', 'spec,gems']
+end
 
 namespace :db do
   require 'sqlite3'
@@ -11,3 +23,6 @@ namespace :db do
     load("db/schema.rb")
   end
 end
+
+desc "Default task is to run specs"
+task :default => :spec

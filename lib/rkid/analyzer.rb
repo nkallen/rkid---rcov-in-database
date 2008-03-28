@@ -1,6 +1,6 @@
 module Rkid
   def self.analyze(&block)
-    ActiveRecord::Base.establish_connection YAML::load_file('../../db/databases.yml')['test']
+    ActiveRecord::Base.establish_connection YAML::load_file('db/databases.yml')['test']
     coverage = Rcov::CodeCoverageAnalyzer.new
     callsite = Rcov::CallSiteAnalyzer.new
     

@@ -1,11 +1,11 @@
 ActiveRecord::Schema.define do
-  create_table :classes, :force => true do |t|
+  create_table :klasses, :force => true do |t|
     t.string :name
   end
   
   create_table :methods, :force => true do |t|
     t.string :name
-    t.integer :class_id, :defsite_id
+    t.integer :klass_id, :defsite_id
   end
   
   create_table :files, :force => true do |t|
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define do
   end
   
   create_table :lines, :force => true do |t|
-    t.integer :times_called, :method_id, :file_id
+    t.integer :times_called, :method_id, :file_id, :number
     t.boolean :covered
     t.string :body
   end

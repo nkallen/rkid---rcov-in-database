@@ -19,15 +19,14 @@ module Rkid
       end
       klass.save!
     end
-    # p analyzer1.analyzed_classes        # => ["X", ... ]
-    # p analyzer1.methods_for_class("ActiveRelation::Relation")  # => ["f1", "f2", "f3"]
-    # p analyzer1.defsite("ActiveRelation::Table#attributes")         # => DefSite object
-    # pp analyzer1.callsite_analyzers("ActiveRelation::Table#attributes")       # => hash with CallSite => count
-    # p analyzer2.analyzed_files   # => ["foo.rb", "bar.rb", ... ]
-    # p 11111111
-    # lines, marked_info, count_info =  analyzer2.data("/Users/nkallen/Sites/arel/doc/../lib/active_relation/relations/relation.rb")
-    # f = Rcov::FileStatistics.new("asdf", lines, count_info)
-    # p f.num_lines, f.code_coverage_analyzer
+    coverage_analyzer.analyzed_files.each do |file_name|
+      file = File.new(:name => file_name)
+      lines, marked, count = coverage_analyzer.data(file_name)
+      lines.each_with_index do |line, i|
+        file.lines.build(:body => line, :covered => marked[i], :times_called => count[i])
+      end
+      file.save!
+    end
   end
   
   private

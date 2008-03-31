@@ -1,27 +1,24 @@
+$:.unshift(File.dirname(__FILE__) + "/lib")
+
 require 'rubygems'
 require 'rake'
+require 'hoe'
 require 'activerecord'
 require 'spec'
 require 'spec/rake/spectask'
+require 'rkid'
 
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
 end
 
-Spec::Rake::SpecTask.new(:coverage) do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
-  t.rcov = true
-  t.rcov_opts = ['-x', 'spec,gems']
-end
-
-namespace :db do
-  require 'sqlite3'
-  
-  desc 'Build the test databases'
-  task :build do
-    ActiveRecord::Base.establish_connection YAML::load_file('db/databases.yml')['test']
-    load("db/schema.rb")
-  end
+Hoe.new('Rkid', Rkid::VERSION) do |p|
+  p.name = "Rkid"
+  p.author = "Nick Kallen"
+  p.description = "Rcov in Database"
+  p.email = 'nick@pivotallabs.com'
+  p.summary = "Rcov in Database"
+  p.url = ""
 end
 
 desc "Default task is to run specs"

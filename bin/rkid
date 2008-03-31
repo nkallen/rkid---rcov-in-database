@@ -1,0 +1,22 @@
+require 'lib/rkid'
+Rkid.env = 'production'
+
+$ORIGINAL_ARGV = ARGV.clone
+if idx = ARGV.index("--")
+  extra_args = ARGV[idx+1..-1]
+  ARGV.replace(ARGV[0,idx])
+else
+  extra_args = []
+end
+
+at_exit {
+  Rkid::report
+}
+
+pending_scripts = ARGV.clone
+ARGV.replace extra_args
+until pending_scripts.empty?
+  prog = pending_scripts.shift
+  Rkid::prepare
+  load prog
+end

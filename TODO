@@ -1,0 +1,4 @@
+1. Package as gem
+2. Create rake task factory a la Rspec or patch Rspec's factory
+3. Improve performance by moving code to C
+4. Build browser

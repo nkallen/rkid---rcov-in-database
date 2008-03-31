@@ -1,0 +1,16 @@
+Manifest.txt
+README.txt
+Rakefile
+TODO
+bin/rkid
+db/schema.rb
+lib/rkid.rb
+lib/rkid/analyzer.rb
+lib/rkid/models.rb
+rkid.db
+spec/fixtures/test_class.rb
+spec/rkid/analyzer_spec.rb
+spec/rkid/sample.db
+spec/spec_helper.rb
+test.db
+test.html

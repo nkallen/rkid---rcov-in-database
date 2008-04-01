@@ -1,6 +1,6 @@
 module Rkid
   mattr_accessor :root, :env, :callsite_analyzer, :coverage_analyzer
-  
+    
   IGNORE_FILES = [
     /\A#{Regexp.escape(Pathname.new(Config::CONFIG["libdir"]).cleanpath.to_s)}/,
     /\btc_[^.]*.rb/,
@@ -8,7 +8,7 @@ module Rkid
     /\bvendor\//,
     /\A#{Regexp.escape(__FILE__)}\z/
   ]
-      
+  
   def self.analyze(&block)
     prepare
     yield
@@ -34,11 +34,16 @@ module Rkid
   end
   
   def self.analyze_callsite(callsite_analyzer)
-    callsite_analyzer.analyzed_classes.each do |klass_name|
-      next if klass_name =~ /Rcov|Rkid/
-      klass = Klass.create('name' => klass_name)
+    total = callsite_analyzer.analyzed_classes.size
+    callsite_analyzer.analyzed_classes.each_with_index do |klass_name, i|
+      puts "Processing class '#{klass_name}', #{i+1} of #{total}"
+      klass = nil
+      
       callsite_analyzer.methods_for_class(klass_name).each do |method_name|
         defsite = callsite_analyzer.defsite(klass_method = klass_name + "#" + method_name)
+        next if IGNORE_FILES.any? { |pattern| defsite.file =~ pattern }
+        
+        klass ||= Klass.create('name' => klass_name)
         defsite_file = File.create('name' => defsite.file)
         defsite_line = Line.create('file_id' => defsite_file.id, 'number' => defsite.line)
         method = Method.create(

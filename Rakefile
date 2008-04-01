@@ -4,9 +4,9 @@ require 'rubygems'
 require 'rake'
 require 'hoe'
 require 'activerecord'
-require 'spec'
 require 'spec/rake/spectask'
 require 'rkid'
+require 'rkid/rake/task'
 
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
@@ -19,7 +19,6 @@ Hoe.new('Rkid', Rkid::VERSION) do |p|
   p.email = 'nick@pivotallabs.com'
   p.summary = "Rcov in Database"
   p.url = ""
+  p.extra_deps << ['rspec']
+  p.extra_deps << ['rcov']
 end
-
-desc "Default task is to run specs"
-task :default => :spec

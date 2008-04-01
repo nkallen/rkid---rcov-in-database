@@ -1,4 +1,5 @@
-require 'lib/rkid'
+require 'rubygems'
+require 'rkid'
 Rkid.env = 'production'
 
 $ORIGINAL_ARGV = ARGV.clone

@@ -14,11 +14,11 @@ module Rkid
     end
     
     def create(attributes)
-      begin
-        insert(attributes)
-      rescue SQLite3::SQLException
-        update(attributes)
-      end
+      update(attributes) || insert(attributes)
+    end
+    
+    def update(attributes)
+      false
     end
   end
   
@@ -26,10 +26,6 @@ module Rkid
     extend FastCreate
     
     has_many :methods, :class_name => 'Method', :dependent => :destroy
-    
-    def self.update(attributes)
-      find_by_name(attributes['name'])
-    end
   end
 
   class Method < ::ActiveRecord::Base
@@ -39,10 +35,6 @@ module Rkid
     has_many :callsites, :dependent => :destroy
     has_many :lines, :dependent => :destroy
     belongs_to :defsite, :class_name => 'Line'
-    
-    def self.update(attributes)
-      find_by_name_and_klass_id(attributes['name'], attributes['klass_id'])
-    end
   end
 
   class File < ::ActiveRecord::Base
@@ -78,17 +70,18 @@ module Rkid
     belongs_to :file
     
     def self.update(attributes)
-      line = find_by_number_and_file_id(attributes['number'], attributes['file_id'])
-      assignments = attributes.keys.collect do |key|
-        "#{key} = :#{key}"
-      end.join ', '
-      update = db.prepare <<-SQL
-        UPDATE #{table_name} SET
-        #{assignments}
-        WHERE id = :id
-      SQL
-      update.execute attributes.except('covered').merge('id' => line.id)
-      line
+      if line = find_by_number_and_file_id(attributes['number'], attributes['file_id'])
+        assignments = attributes.keys.collect do |key|
+          "#{key} = :#{key}"
+        end.join ', '
+        update = db.prepare <<-SQL
+          UPDATE #{table_name} SET
+          #{assignments}
+          WHERE id = :id
+        SQL
+        update.execute attributes.merge('id' => 'line.id')
+        line
+      end
     end
   end
 end

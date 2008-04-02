@@ -13,7 +13,7 @@ Spec::Rake::SpecTask.new do |t|
 end
 
 Hoe.new('Rkid', Rkid::VERSION) do |p|
-  p.name = "Rkid"
+  p.name = "rkid"
   p.author = "Nick Kallen"
   p.description = "Rcov in Database"
   p.email = 'nick@pivotallabs.com'

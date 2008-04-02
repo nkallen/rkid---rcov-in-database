@@ -35,13 +35,19 @@ module Rkid
     ActiveRecord::Base.connection.raw_connection.transaction
   end
   
-  def self.analyze_callsite(callsite_analyzer)
-    files = Hash.new do |h, file_name|
-      h[file_name] = File.create('name' => file_name)
-    end
-    lines = Hash.new do |h, (file_name, number)|
+  def self.lines
+    @lines ||= Hash.new do |h, (file_name, number)|
       h[[file_name, number]] = Line.create('file_id' => files[file_name].id, 'number' => number)
     end
+  end
+  
+  def self.files
+    @files ||= Hash.new do |h, file_name|
+      h[file_name] = File.create('name' => file_name)
+    end
+  end
+  
+  def self.analyze_callsite(callsite_analyzer)
     total = callsite_analyzer.analyzed_classes.size
     callsite_analyzer.analyzed_classes.each_with_index do |klass_name, i|
       puts "Processing class '#{klass_name}', #{i+1} of #{total}"

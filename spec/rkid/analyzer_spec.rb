@@ -4,7 +4,6 @@ describe Rkid do
   
   before(:all) do
     require 'spec/fixtures/test_class.rb'
-    Rkid.env = 'test'
     Rkid.analyze { TestedClass.new.tested_method }
   end
   
@@ -23,7 +22,7 @@ describe Rkid do
       method = Rkid::Klass.find_by_name('TestedClass').methods.find_by_name('tested_method')
       callsite = method.callsites.first
       callsite.count.should == 1
-      callsite.frames.first.line.number.should == 8
+      callsite.frames.first.line.number.should == File.open(__FILE__).readlines.index("    Rkid.analyze { TestedClass.new.tested_method }\n") + 1
       callsite.frames.first.line.file.name.should == "./spec/rkid/analyzer_spec.rb"
     end
 

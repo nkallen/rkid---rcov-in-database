@@ -4,21 +4,13 @@ module Rkid
       ActiveRecord::Base.connection.raw_connection
     end
     
-    def insert(attributes)
+    def create(attributes)
       insert = db.prepare <<-SQL
         INSERT INTO #{table_name}
         (#{attributes.keys.join(', ')}) VALUES (#{attributes.keys.collect { |c| ":#{c}" }.join(', ')})
       SQL
       insert.execute attributes
       instantiate(attributes.merge('id' => db.last_insert_row_id))
-    end
-    
-    def create(attributes)
-      update(attributes) || insert(attributes)
-    end
-    
-    def update(attributes)
-      false
     end
   end
   
@@ -60,7 +52,6 @@ module Rkid
 
     belongs_to :callsite
     belongs_to :line
-    belongs_to :callsite
   end
 
   class Line < ::ActiveRecord::Base
@@ -69,19 +60,18 @@ module Rkid
     belongs_to :method
     belongs_to :file
     
-    def self.update(attributes)
-      if line = find_by_number_and_file_id(attributes['number'], attributes['file_id'])
-        assignments = attributes.keys.collect do |key|
-          "#{key} = :#{key}"
-        end.join ', '
-        update = db.prepare <<-SQL
-          UPDATE #{table_name} SET
-          #{assignments}
-          WHERE id = :id
-        SQL
-        update.execute attributes.merge('id' => 'line.id')
-        line
-      end
+    def self.update(line, attributes)
+      assignments = attributes.keys.collect do |key|
+        "#{key} = :#{key}"
+      end.join ', '
+      update = db.prepare <<-SQL
+        UPDATE #{table_name} SET
+        #{assignments}
+        WHERE id = :id
+      SQL
+      update.execute attributes.merge('id' => line.id)
+      line.attributes = attributes
+      line
     end
   end
 end

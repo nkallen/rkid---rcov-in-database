@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'rkid'
-Rkid.env = 'production'
 
 $ORIGINAL_ARGV = ARGV.clone
 if idx = ARGV.index("--")

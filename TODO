@@ -1,4 +1,3 @@
-1. Create rake task factory a la Rspec/HOE and/or patch Rspec's factory
+1. Improve performance by moving code to C. Ignore files are important in the data collecting phase.
 2. Build primitive browser
-3. Improve performance by moving code to C
 4. Fancify browser
